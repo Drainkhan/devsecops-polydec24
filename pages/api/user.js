@@ -14,7 +14,10 @@ export default async function handler(req, res) {
   await client.connect();
 
   // VULNERABILITY: SQL Injection - user input directly concatenated into query
-  const userId = req.query.id;
+  const userId = Number(req.query.id);
+  if (Number.isNaN(userId)) {
+    return res.status(400).json({ error: 'Invalid user ID' });
+  }
   const query = `SELECT * FROM users WHERE id = $1`;
   
   try {
